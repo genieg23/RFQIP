@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RFQ Portal — HWASEUNG</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900견적 버전&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f5f7;color:#1a1a1a;font-size:14px}
+:root{--blue:#185FA5;--blue-lt:#E6F1FB;--blue-dk:#0C447C;--green:#3B6D11;--green-lt:#EAF3DE;--amber:#BA7517;--amber-lt:#FAEEDA;--red:#A32D2D;--red-lt:#FCEBEB;--gray:#5F5E5A;--gray-lt:#F1EFE8;--purple:#3C3489;--purple-lt:#EEEDFE;--teal:#085041;--teal-lt:#E1F5EE;--border:#e0e0e0;--border2:#cacaca;--bg:#f4f5f7;--surface:#fff;--surface2:#f8f8f6;--text:#1a1a1a;--text2:#5a5a5a;--text3:#999}
+
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:210px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.logo{padding:16px;border-bottom:1px solid var(--border)}
+.logo-text{font-size:15px;font-weight:600}
+.logo-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.nav-sec{font-size:10px;color:var(--text3);padding:14px 16px 4px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;font-size:13px;color:var(--text2);transition:background .1s;border-left:2px solid transparent}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:#EEF5FC;color:var(--blue-dk);font-weight:600;border-left-color:var(--blue)}
+.ni{width:15px;height:15px;flex-shrink:0}
+
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.bc{font-size:13px;color:var(--text2);font-weight:400;cursor:pointer}
+.bc:hover{color:var(--blue)}
+.bcsep{color:var(--text3);margin:0 4px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.user-chip{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2)}
+.ava{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;background:var(--blue-lt);color:var(--blue-dk)}
+
+.content{flex:1;overflow-y:auto;padding:20px 22px}
+.page{display:none}.page.active{display:block}
+
+/* cards */
+.card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:600}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-blue{background:var(--blue-lt);color:var(--blue-dk)}
+.b-green{background:var(--green-lt);color:var(--green)}
+.b-amber{background:var(--amber-lt);color:var(--amber)}
+.b-red{background:var(--red-lt);color:var(--red)}
+.b-gray{background:var(--gray-lt);color:var(--gray)}
+.b-purple{background:var(--purple-lt);color:var(--purple)}
+.b-teal{background:var(--teal-lt);color:var(--teal)}
+
+/* buttons */
+.btn{padding:6px 14px;border-radius:7px;border:1px solid var(--border2);background:#fff;cursor:pointer;font-size:12px;color:var(--text);transition:background .1s}
+.btn:hover{background:var(--bg)}
+.btn-p{background:var(--blue);color:#fff;border-color:var(--blue)}.btn-p:hover{background:var(--blue-dk)}
+.btn-sm{padding:4px 10px;font-size:11px}
+.btn-ghost{border:none;background:none;cursor:pointer;font-size:12px;color:var(--text2);padding:4px 6px}
+.btn-ghost:hover{color:var(--text)}
+.btn-back{display:flex;align-items:center;gap:4px;padding:5px 11px;border-radius:7px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:12px;color:var(--text2);margin-bottom:14px}
+.btn-back:hover{background:var(--bg)}
+
+/* form */
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:600}
+.fc{width:100%;padding:7px 10px;border:1px solid var(--border2);border-radius:7px;background:#fff;color:var(--text);font-size:13px;font-family:inherit}
+.fc:focus{outline:none;border-color:var(--blue)}
+textarea.fc{resize:vertical;min-height:80px;line-height:1.5}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.fr4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+
+/* stat card */
+.sc{background:var(--surface2);border-radius:8px;padding:12px 14px}
+.sc-label{font-size:11px;color:var(--text2);margin-bottom:5px}
+.sc-val{font-size:20px;font-weight:600}
+.sc-sub{font-size:11px;color:var(--text3);margin-top:3px}
+
+/* table */
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:600;color:var(--text2);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:9px 10px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.tbl-hover tr:hover td{background:var(--bg);cursor:pointer}
+.tbl-hover tr.selected td {background-color: var(--blue-lt) !important;}
+
+
+/* rfq-id mono */
+.rid{font-family:monospace;font-size:11px;color:var(--text2)}
+
+/* tabs */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:16px;gap:0}
+.tab{padding:9px 16px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .1s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--blue-dk);border-bottom-color:var(--blue);font-weight:600}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* step bar */
+.steps{display:flex;margin-bottom:18px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.step{flex:1;padding:8px;text-align:center;font-size:12px;color:var(--text2);background:var(--surface2);cursor:pointer;border-right:1px solid var(--border)}
+.step:last-child{border-right:none}
+.step.done{background:var(--blue);color:#fff}
+.step.cur{background:var(--blue-lt);color:var(--blue-dk);font-weight:600}
+
+/* kanban */
+.kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:start}
+.kb-col{background:var(--surface2);border-radius:10px;padding:10px}
+.kb-col-hd{font-size:11px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.kb-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px;margin-bottom:8px;cursor:pointer;transition:box-shadow .1s}
+.kb-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.kb-id{font-size:10px;color:var(--text3);font-family:monospace;margin-bottom:4px}
+.kb-co{font-size:12px;font-weight:600;margin-bottom:3px}
+.kb-sub{font-size:11px;color:var(--text2)}
+.kb-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+
+/* bar chart */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-lbl{font-size:12px;color:var(--text2);width:55px;flex-shrink:0;text-align:right}
+.bar-track{flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s}
+.bar-val{font-size:11px;color:var(--text2);width:38px;text-align:right}
+
+/* donut placeholder */
+.donut-wrap{display:flex;align-items:center;gap:20px}
+.donut-svg{flex-shrink:0}
+.donut-legend{font-size:12px}
+.dl-item{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* timeline */
+.tl{list-style:none}
+.tl-item{display:flex;gap:11px;margin-bottom:12px;align-items:flex-start}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.tl-body{font-size:12px}.tl-date{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* LTA highlight */
+.lta-box{background:#EEEDFE;border:1px solid #AFA9EC;border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.lta-hd{font-size:12px;font-weight:700;color:var(--purple);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+
+/* filter bar */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.filter-bar select,.filter-bar input{padding:6px 10px;border:1px solid var(--border2);border-radius:7px;font-size:12px;background:#fff;color:var(--text)}
+.date-sep{font-size:12px;color:var(--text3)}
+
+/* invest row */
+.inv-row{display:flex;align-items:center;gap:8px}
+.inv-row input{width:100px}
+.inv-unit{font-size:12px;color:var(--text2);white-space:nowrap}
+.radio-group{display:flex;gap:14px;margin-top:7px}
+.radio-group label{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text);cursor:pointer;font-weight:400}
+
+/* invest detail table */
+.inv-tbl input{width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;background:#fff;color:var(--text);font-family:inherit}
+.inv-tbl td{padding:5px 8px}
+
+/* success/fail indicator */
+.result-won{background:#EAF3DE;border-left:3px solid #3B6D11;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:10px}
+.result-lost{background:var(--red-lt);border-left:3px solid var(--red);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:10px}
+
+/* quote mini table in detail */
+.qt input{width:58px;padding:3px 5px;border:1px solid var(--border);border-radius:4px;font-size:11px;background:#fff;color:var(--text);font-family:inherit}
+.qt select{width:90px;padding:3px 5px;border:1px solid var(--border);border-radius:4px;font-size:11px;background:#fff;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo" style="padding:14px 16px 12px"><div class="logo-text" style="font-size:12px;color:var(--text3);letter-spacing:.04em;text-transform:uppercase;font-weight:400;margin-bottom:3px">RFQ Portal</div><div style="font-family:'Noto Sans KR',sans-serif;font-size:22px;font-weight:900;font-style:italic;color:rgb(0,112,192);letter-spacing:-1px;line-height:1">HWASEUNG</div></div>
+  <div class="nav-sec">메인</div>
+  <div class="nav-item active" id="n-dashboard" onclick="nav('dashboard',this)">
+    <svg class="ni" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+    Overview
+  </div>
+  <div class="nav-sec">RFQ 관리</div>
+  <div class="nav-item" id="n-rfqlist" onclick="navToList()">
+    <svg class="ni" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.3"/><line x1="4" y1="5" x2="12" y2="5" stroke="currentColor" stroke-width="1.3"/><line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="1.3"/><line x1="4" y1="11" x2="9" y2="11" stroke="currentColor" stroke-width="1.3"/></svg>
+    RFQ 목록
+  </div>
+  <div class="nav-item" id="n-kanban" onclick="nav('kanban',this)">
+    <svg class="ni" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="4" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="6" y="3" width="4" height="7" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="3" width="4" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+    진행 보드
+  </div>
+  <div class="nav-item" id="n-rfqnew" onclick="nav('rfqnew',this)">
+    <svg class="ni" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><line x1="8" y1="5" x2="8" y2="11" stroke="currentColor" stroke-width="1.3"/><line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.3"/></svg>
+    RFQ 등록
+  </div>
+  <div class="nav-sec">분석·조회</div>
+  <div class="nav-item" id="n-analytics" onclick="nav('analytics',this)">
+    <svg class="ni" viewBox="0 0 16 16" fill="none"><polyline points="1,13 5,7 9,10 15,3" stroke="currentColor" stroke-width="1.3" fill="none"/><circle cx="5" cy="7" r="1.2" fill="currentColor"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="3" r="1.2" fill="currentColor"/></svg>
+    수주 분석
+  </div>
+  <div class="nav-item" id="n-cumulative" onclick="nav('cumulative',this)">
+    <svg class="ni" viewBox="0 0 16 16" fill="none"><rect x="2" y="9" width="3" height="5" rx="1" fill="currentColor" opacity=".3"/><rect x="6.5" y="6" width="3" height="8" rx="1" fill="currentColor" opacity=".5"/><rect x="11" y="3" width="3" height="11" rx="1" fill="currentColor" opacity=".8"/></svg>
+    누적 수주 현황
+  </div>
+  <div class="nav-sec">마스터</div>
+  <div class="nav-item" id="n-customers" onclick="nav('customers',this)">
+    <svg class="ni" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="currentColor" stroke-width="1.3"/></svg>
+    고객사 관리
+  </div>
+    <div class="nav-item" id="n-admins" onclick="nav('admins',this)">
+    <svg class="ni" viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke="currentColor" stroke-linecap="round"><path d="M5.5 5.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM1 14s1.5-2 4.5-2 4.5 2 4.5 2"/><path d="M10.5 6.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM15 14s-1-1.5-3.5-1.5-3.5 1.5-3.5 1.5" opacity="0.6"/></svg>
+    담당자 관리
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Overview</div>
+    <div class="topbar-right">
+      <button class="btn btn-p btn-sm" onclick="nav('rfqnew',document.getElementById('n-rfqnew'))">+ 신규 RFQ 등록</button>
+      <div class="user-chip"><div class="ava">유</div>김형석 · FL영업</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- ============ OVERVIEW ============ -->
+  <div class="page active" id="page-dashboard">
+    <div class="fr4" style="margin-bottom:16px">
+      <div class="sc"><div class="sc-label">전체 RFQ</div><div class="sc-val" style="color:var(--blue)">142</div><div class="sc-sub">이번 분기 +18건</div></div>
+      <div class="sc"><div class="sc-label">진행중</div><div class="sc-val" style="color:var(--amber)">37</div><div class="sc-sub">마감 임박 5건</div></div>
+      <div class="sc"><div class="sc-label">수주 확정</div><div class="sc-val" style="color:var(--green)">28</div><div class="sc-sub">수주율 64.2%</div></div>
+      <div class="sc"><div class="sc-label">누적 수주액</div><div class="sc-val" style="color:var(--purple)">1,470억</div><div class="sc-sub">목표 대비 91%</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px">
+      <div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">마감 임박 RFQ</div><span class="badge b-red">D-7 이내 5건</span></div>
+          <table class="tbl-hover">
+            <thead><tr><th>RFQ 번호</th><th>업체명</th><th>차종</th><th>제품군</th><th>마감</th><th>담당</th><th>상태</th></tr></thead>
+            <tbody>
+              <tr onclick="openDetail('2026-03-31-1-1')"><td><span class="rid">2026-03-31-1-1</span></td><td>HMG 울산</td><td>NQ7</td><td>저압</td><td style="color:var(--red);font-weight:600">D-1</td><td>김형석</td><td><span class="badge b-amber">진행중</span></td></tr>
+              <tr onclick="openDetail('2026-03-28-2-1')"><td><span class="rid">2026-03-28-2-1</span></td><td>HMG 화성</td><td>EVX</td><td>W/S</td><td style="color:var(--amber);font-weight:600">D-3</td><td>김권지</td><td><span class="badge b-blue">수심위</span></td></tr>
+              <tr onclick="openDetail('2026-03-25-1-2')"><td><span class="rid">2026-03-25-1-2</span></td><td>BMW</td><td>G26</td><td>A/C</td><td style="color:var(--amber)">D-5</td><td>이현주</td><td><span class="badge b-amber">진행중</span></td></tr>
+              <tr onclick="openDetail('2026-03-22-3-1')"><td><span class="rid">2026-03-22-3-1</span></td><td>GM</td><td>9BXXX</td><td>W/S</td><td style="color:var(--gray)">D-7</td><td>김권지</td><td><span class="badge b-gray">Holding</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">최근 수주·실패 결과</div></div>
+          <table>
+            <thead><tr><th>RFQ</th><th>업체</th><th>품목</th><th>매출(억)</th><th>이익율</th><th>결과</th><th>확정일</th></tr></thead>
+            <tbody>
+              <tr><td><span class="rid">2026-03-20-1-1</span></td><td>HMG 울산</td><td>OS 저압</td><td>187</td><td style="color:var(--green)">6.8%</td><td><span class="badge b-green">수주</span></td><td>2026.03.28</td></tr>
+              <tr><td><span class="rid">2026-03-15-3-1</span></td><td>GM</td><td>9BXX W/S</td><td>—</td><td>—</td><td><span class="badge b-red">실패</span></td><td>2026.03.25</td></tr>
+              <tr><td><span class="rid">2026-02-10-2-1</span></td><td>HMG 화성</td><td>EV3 고압</td><td>95</td><td style="color:var(--green)">5.1%</td><td><span class="badge b-green">수주</span></td><td>2026.03.10</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">제품군별 수주율</div></div>
+          <div class="bar-row"><div class="bar-lbl">저압</div><div class="bar-track"><div class="bar-fill" style="width:72%;background:var(--blue)"></div></div><div class="bar-val">72%</div></div>
+          <div class="bar-row"><div class="bar-lbl">B/H</div><div class="bar-track"><div class="bar-fill" style="width:61%;background:var(--blue)"></div></div><div class="bar-val">61%</div></div>
+          <div class="bar-row"><div class="bar-lbl">A/C</div><div class="bar-track"><div class="bar-fill" style="width:58%;background:var(--blue)"></div></div><div class="bar-val">58%</div></div>
+          <div class="bar-row"><div class="bar-lbl">I/C</div><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--green)"></div></div><div class="bar-val">80%</div></div>
+          <div class="bar-row"><div class="bar-lbl">W/S</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:var(--amber)"></div></div><div class="bar-val">45%</div></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">상태 분포</div></div>
+          <div class="donut-wrap">
+            <svg class="donut-svg" width="90" height="90" viewBox="0 0 90 90">
+              <circle cx="45" cy="45" r="34" fill="none" stroke="#f0f0f0" stroke-width="14"/>
+              <circle cx="45" cy="45" r="34" fill="none" stroke="#185FA5" stroke-width="14" stroke-dasharray="77 137" stroke-dashoffset="0"/>
+              <circle cx="45" cy="45" r="34" fill="none" stroke="#3B6D11" stroke-width="14" stroke-dasharray="40 174" stroke-dashoffset="-77"/>
+              <circle cx="45" cy="45" r="34" fill="none" stroke="#E24B4A" stroke-width="14" stroke-dasharray="21 193" stroke-dashoffset="-117"/>
+              <circle cx="45" cy="45" r="34" fill="none" stroke="#EF9F27" stroke-width="14" stroke-dasharray="31 183" stroke-dashoffset="-138"/>
+              <text x="45" y="49" text-anchor="middle" font-size="11" fill="#1a1a1a" font-weight="600">142</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="dl-item"><div class="dl-dot" style="background:#185FA5"></div><span>진행중 37</span></div>
+              <div class="dl-item"><div class="dl-dot" style="background:#3B6D11"></div><span>수주 28</span></div>
+              <div class="dl-item"><div class="dl-dot" style="background:#E24B4A"></div><span>실패 15</span></div>
+              <div class="dl-item"><div class="dl-dot" style="background:#EF9F27"></div><span>수심위 22</span></div>
+              <div class="dl-item"><div class="dl-dot" style="background:#888"></div><span>기타 40</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RFQ 목록 ============ -->
+  <div class="page" id="page-rfqlist">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-sm" style="display:flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="10" height="14" rx="1.5" stroke="currentColor" stroke-width="1.3"/><line x1="5" y1="5" x2="11" y2="5" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="11" x2="9" y2="11" stroke="currentColor" stroke-width="1.2"/></svg>Excel 내보내기</button></div>
+    <div class="filter-bar">
+      <select><option>전체 상태</option><option>접수</option><option>진행중</option><option>수주</option><option>실패</option><option>Holding</option><option>Drop</option></select>
+      <select><option>전체 제품군</option><option>저압</option><option>고압</option><option>A/C</option><option>W/S</option><option>MOLD'G류</option></select>
+      <select><option>전체 입찰구분</option><option>경쟁</option><option>심의</option><option>전략</option></select>
+      <select><option>전체 담당자</option><option>김형석</option><option>김권지</option><option>이현주</option></select>
+      <div class="date-sep">접수일</div>
+      <input type="date" value="2026-01-01" style="font-size:11px;padding:5px 8px">
+      <div class="date-sep">~</div>
+      <input type="date" value="2026-03-31" style="font-size:11px;padding:5px 8px">
+      <input type="text" placeholder="업체·품번·차종 검색" style="min-width:160px">
+    </div>
+    <div class="card" style="padding:0">
+      <table class="tbl-hover">
+        <thead><tr><th>RFQ 번호</th><th>차수</th><th>담당</th><th>입찰</th><th>업체명</th><th>차종</th><th>제품군</th><th>생산지</th><th>SOP</th><th>생산대수/년</th><th>매출(억)</th><th>이익율</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr onclick="openDetail('2026-03-31-1-1')"><td><span class="rid">2026-03-31-1-1</span></td><td>1차</td><td>김형석</td><td><span class="badge b-gray">경쟁</span></td><td>HMG 울산</td><td>NQ7</td><td>저압</td><td>R&A</td><td>2029.01</td><td>10,000</td><td style="color:var(--blue);font-weight:500">150</td><td style="color:var(--green)">6.2%</td><td><span class="badge b-amber">진행중</span></td></tr>
+          <tr onclick="openDetail('2026-03-28-2-1')"><td><span class="rid">2026-03-28-2-1</span></td><td>2차</td><td>김권지</td><td><span class="badge b-gray">심의</span></td><td>HMG 화성</td><td>CV2</td><td>고압</td><td>HSI</td><td>2028.06</td><td>25,000</td><td>—</td><td>—</td><td><span class="badge b-blue">수심위</span></td></tr>
+          <tr onclick="openDetail('2026-03-25-1-2')"><td><span class="rid">2026-03-25-1-2</span></td><td>1차</td><td>이현주</td><td><span class="badge b-gray">경쟁</span></td><td>BMW</td><td>G26</td><td>A/C</td><td>HSIA</td><td>2028.09</td><td>8,500</td><td>—</td><td>—</td><td><span class="badge b-amber">진행중</span></td></tr>
+          <tr onclick="openDetail('2026-03-20-1-1')"><td><span class="rid">2026-03-20-1-1</span></td><td>1차</td><td>김형석</td><td><span class="badge b-gray">전략</span></td><td>HMG 울산</td><td>OS</td><td>저압</td><td>R&A</td><td>2027.03</td><td>75,000</td><td style="color:var(--blue);font-weight:500">187</td><td style="color:var(--green)">6.8%</td><td><span class="badge b-green">수주</span></td></tr>
+          <tr onclick="openDetail('2026-03-15-3-1')"><td><span class="rid">2026-03-15-3-1</span></td><td>3차</td><td>김권지</td><td><span class="badge b-gray">경쟁</span></td><td>GM</td><td>9BXX</td><td>W/S</td><td>HSAM</td><td>2028.01</td><td>18,000</td><td>—</td><td>—</td><td><span class="badge b-red">실패</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ RFQ 상세 ============ -->
+  <div class="page" id="page-rfqdetail">
+    <button class="btn-back" onclick="navToList()">
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M7.5 2L4 6l3.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      RFQ 목록으로
+    </button>
+
+    <!-- 상단 헤더 -->
+    <div class="card" style="padding:14px 18px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="rid" style="font-size:13px;font-weight:600" id="d-rfqid">2026-03-31-1-1</span>
+          <span class="badge b-amber" id="d-status-badge">진행중</span>
+          <span class="badge b-gray">1차</span>
+          <span class="badge b-gray">경쟁</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <select class="fc" style="width:auto;font-size:12px;padding:5px 10px" onchange="updateStatus(this.value)">
+            <option>접수</option><option selected>진행중</option><option>수주</option><option>실패</option><option>Drop</option><option>Holding</option>
+          </select>
+          <button class="btn btn-sm" onclick="openQuoteFromList(document.getElementById('d-rfqid').textContent)">견적 작성 / 업데이트</button>
+          <button class="btn btn-sm">Excel 내보내기</button>
+        </div>
+      </div>
+      <div style="margin-top:10px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px">
+        <div><div style="font-size:10px;color:var(--text3)">업체명</div><div style="font-size:12px;font-weight:600">HMG 울산</div></div>
+        <div><div style="font-size:10px;color:var(--text3)">차종</div><div style="font-size:12px;font-weight:600">NQ7</div></div>
+        <div><div style="font-size:10px;color:var(--text3)">제품군</div><div style="font-size:12px;font-weight:600">저압</div></div>
+        <div><div style="font-size:10px;color:var(--text3)">생산지</div><div style="font-size:12px;font-weight:600">R&A</div></div>
+        <div><div style="font-size:10px;color:var(--text3)">SOP</div><div style="font-size:12px;font-weight:600">2029.01</div></div>
+        <div><div style="font-size:10px;color:var(--text3)">생산대수/년</div><div style="font-size:12px;font-weight:600">10,000</div></div>
+      </div>
+    </div>
+
+    <!-- 탭 -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this,'t-info')">RFQ 기본 정보</div>
+      <div class="tab" onclick="switchTab(this,'t-progress')">진행 상황</div>
+      <div class="tab" onclick="switchTab(this,'t-submit')">제출 이력</div>
+      <div class="tab" onclick="switchTab(this,'t-feedback')">고객 피드백</div>
+      <div class="tab" onclick="switchTab(this,'t-fail')">실패 사유</div>
+      <div class="tab" onclick="switchTab(this,'t-lumpsum')" style="color:var(--purple)">일시불 지급</div>
+      <div class="tab" onclick="switchTab(this,'t-lta')">약정 CR (LTA)</div>
+    </div>
+
+    <!-- 탭1: 기본 정보 -->
+    <div class="tab-pane active" id="t-info">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="card">
+          <div class="card-hd"><div class="card-title">접수 정보</div></div>
+          <div class="fr2">
+            <div class="fg"><label>구분</label><select class="fc"><option>RFQ</option><option>RFI</option><option>RFP</option><option>사전SR</option></select></div>
+            <div class="fg"><label>RHQ</label><select class="fc"><option>KRHQ</option><option>ARHQ</option><option>ERHQ</option></select></div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><label>업체코드 / 업체명</label><input class="fc" value="100762 (HMG 울산)"></div>
+            <div class="fg"><label>고객사 PLANT</label><input class="fc" value="HMG 울산 5공장"></div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><label>차종</label><input class="fc" value="NQ7"></div>
+            <div class="fg"><label>SOP</label><input type="date" class="fc" value="2029-01-01"></div>
+          </div>
+          <div class="fr2">
+             <div class="fg"><label>생산대수/년</label><input class="fc" value="10,000"></div>
+             <div class="fg"><label>입찰구분</label><select class="fc"><option>경쟁</option><option>심의</option><option>전략</option></select></div>
+          </div>
+           <div class="fr2">
+            <div class="fg"><label>제품군</label><select class="fc"><option>저압</option><option>고압</option><option>A/C</option><option>W/S</option></select></div>
+            <div class="fg"><label>수주 Type</label><select class="fc"><option>신규</option><option>C.O</option></select></div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><label>당사 생산지</label><select class="fc"><option>R&A</option><option>HSI</option><option>HSIA</option><option>HSAM</option></select></div>
+            <div class="fg"><label>INCOTERMS</label><input class="fc" value="FCA R&A"></div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><label>견적 접수일</label><input type="date" class="fc" value="2026-03-31"></div>
+            <div class="fg"><label>견적 마감일</label><input type="date" class="fc" value="2026-04-07"></div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><label>담당자</label><select class="fc"><option>김형석 (FL영업)</option><option>김권지</option><option>이현주</option></select></div>
+            <div class="fg"><label>경쟁사</label><input class="fc" placeholder="경쟁사명 입력"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><div class="card-title">견적 버전</div><button class="btn btn-sm btn-p" onclick="openQuoteFromList(document.getElementById('d-rfqid')?.textContent||'')">견적 업데이트</button></div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 11px;background:var(--bg);border-radius:7px;cursor:pointer" onclick="openQuoteFromList(document.getElementById('d-rfqid')?.textContent||'')">
+                <div><div style="font-size:12px;font-weight:600">v1.1 (현재)</div><div style="font-size:10px;color:var(--text3)">2026.03.31 · 김형석</div></div>
+                <span class="badge b-blue">작성중</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 11px;border-radius:7px">
+                <div><div style="font-size:12px">v1.0</div><div style="font-size:10px;color:var(--text3)">2026.03.30 · 김형석</div></div>
+                <span class="badge b-gray">구버전</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><div class="card-title">첨부 파일</div></div>
+            <div style="font-size:12px;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;justify-content:space-between;padding:7px 10px;background:var(--bg);border-radius:6px"><span>📄 RFQ_HMG_NQ7_원문.pdf</span><span style="color:var(--text3)">1.2 MB</span></div>
+              <div style="display:flex;justify-content:space-between;padding:7px 10px;background:var(--bg);border-radius:6px"><span>📐 도면_25752-NQ701_rev2.dwg</span><span style="color:var(--text3)">3.4 MB</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭2: 진행 상황 -->
+    <div class="tab-pane" id="t-progress">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="card">
+          <div class="card-hd"><div class="card-title">현재 진행 상태</div></div>
+          <!-- 상태 흐름 표시 -->
+          <div style="display:flex;gap:0;margin-bottom:18px;font-size:11px">
+            <div style="flex:1;text-align:center;padding:7px 4px;background:#185FA5;color:#fff;border-radius:6px 0 0 6px;font-weight:600">접수</div>
+            <div style="width:1px;background:var(--border)"></div>
+            <div style="flex:1;text-align:center;padding:7px 4px;background:#E6F1FB;color:#0C447C;font-weight:600">진행중</div>
+            <div style="width:1px;background:var(--border)"></div>
+            <div style="flex:1;text-align:center;padding:7px 4px;background:var(--bg);color:var(--text3);border-radius:0 6px 6px 0">수주/실패</div>
+          </div>
+          <div class="fg"><label>현재 진행 상태 *</label>
+            <select class="fc" onchange="onProgressStatus(this.value)">
+              <option>접수</option><option selected>진행중</option><option>수주</option><option>실패</option><option>Drop</option><option>Holding</option>
+            </select>
+          </div>
+           <div id="progress-chasu-wrap" style="display:block">
+             <div class="fg"><label>진행 차수</label>
+                 <select class="fc"><option>1차</option><option>2차</option><option>3차</option><option>4차</option><option>5차 이상</option></select>
+             </div>
+           </div>
+          <div class="fr2">
+            <div class="fg"><label>제출 마감일</label><input type="date" class="fc" value="2026-04-06"></div>
+            <div class="fg"><label>실제 제출일</label><input type="date" class="fc"></div>
+          </div>
+          <div class="fg"><label>진행 메모</label><textarea class="fc" placeholder="현재 진행 상황, 이슈, 특이사항 등 자유롭게 기입..."></textarea></div>
+          <div id="holding-reason-wrap" style="display:none">
+            <div class="fg"><label>Holding 사유</label><textarea class="fc" placeholder="고객 결정 지연 사유, 재연락 예정일 등..." style="min-height:70px"></textarea></div>
+          </div>
+          <div id="drop-reason-wrap" style="display:none">
+            <div class="fg"><label>Drop 사유</label><textarea class="fc" placeholder="대응 불가 사유를 기입하세요..." style="min-height:70px"></textarea></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">활동 이력 타임라인</div><button class="btn btn-sm">+ 활동 추가</button></div>
+          <ul class="tl">
+            <li class="tl-item"><div class="tl-dot" style="background:#185FA5"></div><div class="tl-body"><div style="font-weight:600">진행중 전환</div><div>수심위 완료 — 대응 결정</div><div class="tl-date">2026.03.31 · 김형석</div></div></li>
+            <li class="tl-item"><div class="tl-dot" style="background:#EF9F27"></div><div class="tl-body"><div style="font-weight:600">수심위 검토 완료 (옵션)</div><div>팀장 대응 승인. 수량 재확인 필요</div><div class="tl-date">2026.03.29 · 박부장</div></div></li>
+            <li class="tl-item"><div class="tl-dot" style="background:#3B6D11"></div><div class="tl-body"><div style="font-weight:600">고객 미팅 완료</div><div>양재동 구매팀 방문, 요구사항 청취</div><div class="tl-date">2026.03.28 · 김형석</div></div></li>
+            <li class="tl-item"><div class="tl-dot" style="background:#888"></div><div class="tl-body"><div style="font-weight:600">RFQ 접수 등록</div><div>이메일 수신, 포털 등록 완료</div><div class="tl-date">2026.03.28 · 김형석</div></div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 탭3: 제출 이력 -->
+    <div class="tab-pane" id="t-submit">
+      <div class="card">
+        <div class="card-hd"><div class="card-title">견적 제출 이력</div><button class="btn btn-sm">+ 제출 기록 추가</button></div>
+        <table>
+          <thead><tr><th>버전</th><th>제출일</th><th>매출(억)</th><th>이익금액(억)</th><th>이익율</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td>v1.1</td><td>2026.04.06</td><td style="font-weight:600;color:var(--blue)">148.5</td><td>9.0</td><td style="color:var(--green)">6.1%</td><td>원가절감 반영, 판가 14,700 적용</td></tr>
+            <tr><td>v1.0</td><td>2026.04.01</td><td>150.0</td><td>9.3</td><td style="color:var(--green)">6.2%</td><td>최초 제출</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-hd"><div class="card-title">투자비 내역</div></div>
+        <div class="fr2">
+          <div>
+            <div class="card-title" style="font-size:12px;margin-bottom:10px;color:var(--text2)">설비 투자비</div>
+            <table class="inv-tbl">
+              <thead><tr><th>설비 항목</th><th>수량</th><th>금액(억)</th></tr></thead>
+              <tbody>
+                <tr><td><input value="프레스 설비"></td><td><input value="8대"></td><td><input value="4.0"></td></tr>
+                <tr><td><input value="지그"></td><td><input value="4ea"></td><td><input value="1.2"></td></tr>
+                <tr><td><input placeholder="+ 항목 추가"></td><td><input></td><td><input></td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:8px;text-align:right;font-size:13px;font-weight:600">합계: <span style="color:var(--blue)">5.2억</span></div>
+          </div>
+          <div>
+            <div class="card-title" style="font-size:12px;margin-bottom:10px;color:var(--text2)">금형비</div>
+            <table class="inv-tbl">
+              <thead><tr><th>금형 항목</th><th>수량</th><th>금액(억)</th></tr></thead>
+              <tbody>
+                <tr><td><input value="검사구 A단면"></td><td><input value="2개"></td><td><input value="2.4"></td></tr>
+                <tr><td><input value="금형 유지보수"></td><td><input value="1ea"></td><td><input value="0.6"></td></tr>
+                <tr><td><input placeholder="+ 항목 추가"></td><td><input></td><td><input></td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:6px">
+              <div class="radio-group">
+                <label><input type="radio" name="mold-t2" checked> 일시불</label>
+                <label><input type="radio" name="mold-t2"> 상각 (SOP+3Y)</label>
+              </div>
+            </div>
+            <div style="margin-top:8px;text-align:right;font-size:13px;font-weight:600">합계: <span style="color:var(--blue)">3.0억</span></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);text-align:right;font-size:14px;font-weight:600">
+          총 투자비: <span style="color:var(--purple)">8.2억</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 탭4: 고객 피드백 -->
+    <div class="tab-pane" id="t-feedback">
+      <div class="card">
+        <div class="card-hd"><div class="card-title">고객 피드백 기록</div><button class="btn btn-sm btn-p">+ 피드백 추가</button></div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="padding:12px 14px;border:1px solid var(--border);border-radius:8px;border-left:3px solid var(--blue)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:12px;font-weight:600">1차 피드백 — 가격 재검토 요청</span>
+              <span style="font-size:11px;color:var(--text3)">2026.04.01 · 김형석</span>
+            </div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6">HMG 구매팀에서 Y0 판가 15,000원이 경쟁사 대비 약 3% 높다는 피드백. 원가절감 방안 마련 후 재제출 요청. 마감은 4/6까지로 연장 합의.</div>
+            <div style="margin-top:8px;display:flex;gap:8px"><span class="badge b-amber">가격 재검토</span><span class="badge b-gray">마감 연장</span></div>
+          </div>
+          <div style="padding:12px 14px;border:1px solid var(--border);border-radius:8px;border-left:3px solid var(--green)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:12px;font-weight:600">사양 확인 — 도면 rev.2 반영 요청</span>
+              <span style="font-size:11px;color:var(--text3)">2026.03.29 · 김형석</span>
+            </div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6">NQ701 품번 도면 rev.2로 업데이트 요청. 단면적 변경으로 원가 재산출 필요. 약 ±2% 이내 변동 예상.</div>
+            <div style="margin-top:8px;display:flex;gap:8px"><span class="badge b-teal">사양 변경</span></div>
+          </div>
+        </div>
+        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">
+          <div class="card-title" style="margin-bottom:10px">새 피드백 기록</div>
+          <div class="fg"><label>피드백 일자</label><input type="date" class="fc" value="2026-04-01" style="max-width:200px"></div>
+          <div class="fg"><label>피드백 내용 *</label><textarea class="fc" placeholder="고객 측 피드백, 요청사항, 조건 등을 상세히 기입하세요..." style="min-height:100px"></textarea></div>
+          <div class="fr2">
+            <div class="fg"><label>피드백 유형</label>
+              <select class="fc"><option>가격 재검토</option><option>타겟가 접수</option><option>사양 변경</option><option>수량 조정</option><option>일정 변경</option><option>기타</option></select>
+            </div>
+            <div class="fg"><label>고객사 담당자</label>
+               <input class="fc" placeholder="고객사 담당자명 입력">
+            </div>
+          </div>
+          <button class="btn btn-p btn-sm">피드백 저장</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 탭5: 실패 사유 -->
+    <div class="tab-pane" id="t-fail">
+      <div class="card">
+        <div class="card-hd"><div class="card-title">수주 실패 분석</div></div>
+        <div class="result-lost" style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:18px">⚠</span>
+          <div><div style="font-size:12px;font-weight:600;color:var(--red)">수주 실패 — 2026.04.20 확정</div><div style="font-size:12px;color:var(--red-lt);filter:brightness(.6)">담당: 김형석</div></div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label>실패 확정일</label><input type="date" class="fc" value="2026-04-20"></div>
+          <div class="fg"><label>실패 유형</label>
+            <select class="fc">
+              <option>가격 경쟁 열위</option><option>품질·기술 기준 미달</option><option>납기 만족 불가</option><option>Capa 부족 (Drop)</option><option>고객 정책</option><option>기타</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label>수주 실패 주요 원인 *</label>
+          <textarea class="fc" style="min-height:120px" placeholder="예: 당사 판가 15,000원 vs. 경쟁사 A 판가 14,200원 (약 5.3% 고가). 고객(HMG 구매팀)에서 가격 우선 선택 원칙 적용. 당사 품질·납기는 동등 평가 수령했으나 최종 선정에서 탈락.">당사 판가 15,000원 → 경쟁사 A 14,200원 (약 5.3% 차이). 고객(HMG 양재동) 가격 우선 원칙 적용. 가격 경쟁력 열위로 탈락.</textarea>
+        </div>
+        <div class="fg"><label>경쟁사 분석</label>
+          <textarea class="fc" style="min-height:90px" placeholder="확인된 경쟁사명, 예상 판가, 기술적 차별점 등...">경쟁사 A (국내 업체): 판가 14,200원 추정. 자동화 설비 보유로 원가 우위. 경쟁사 B (해외): 가격 유사하나 납기 불확실로 탈락 추정.</textarea>
+        </div>
+        <div class="fg"><label>향후 대응 방안 / 학습 사항</label>
+          <textarea class="fc" style="min-height:90px" placeholder="다음 RFQ에서 개선할 점, 원가절감 가능 포인트 등...">추가 VE활동 필요 필요 (공정 자동화 검토). 추후 RFQ 시 G/R 가격 경쟁력 우선 확보 포지셔닝 전략 수립.</textarea>
+        </div>
+        <button class="btn btn-p btn-sm">실패 사유 저장</button>
+      </div>
+    </div>
+
+    <!-- 탭6: 일시불 지급 -->
+    <div class="tab-pane" id="t-lumpsum">
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">일시불 지급 (Lump Sum)</div>
+          <span class="badge b-purple">LTA 연계</span>
+        </div>
+        <div style="background:#EEEDFE;border:1px solid #AFA9EC;border-radius:8px;padding:12px 14px;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:4px">일시불 지급이란?</div>
+          <div style="font-size:12px;color:var(--purple);opacity:.8;line-height:1.6">LTA 단가 인하 조건 수용 대가로 고객사로부터 일시에 지급받는 금액입니다. 금형비 선지원, 개발비 보전 등의 명목으로 지급될 수 있습니다.</div>
+        </div>
+
+        <!-- 일시불 항목들 -->
+        <div id="lumpsum-items" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+          <div class="lumpsum-item" style="padding:14px;border:1px solid var(--border);border-radius:8px;border-left:3px solid var(--purple)">
+            <div class="fr3">
+              <div class="fg" style="margin-bottom:0">
+                <label>지급 항목명</label>
+                <input class="fc" value="금형비 일시 지원">
+              </div>
+              <div class="fg" style="margin-bottom:0">
+                <label>지급 금액 (억원)</label>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <input class="fc" value="3.0" style="font-size:16px;font-weight:600;color:var(--purple)">
+                  <span style="font-size:12px;color:var(--text2);white-space:nowrap">억원</span>
+                </div>
+              </div>
+              <div class="fg" style="margin-bottom:0">
+                <label>지급 시점</label>
+                <select class="fc"><option>수주 확정 시</option><option>SOP 시점</option><option>계약 체결 시</option><option>기타</option></select>
+              </div>
+            </div>
+            <div class="fg" style="margin-top:10px;margin-bottom:0">
+              <label>지급 사유 / 협상 배경</label>
+              <textarea class="fc" style="min-height:70px"> 3.0억 고객 일시불 요청. GN8 후속 수주 조건. '27.04/15 구매팀 합의.</textarea>
+            </div>
+            <div style="margin-top:8px;display:flex;justify-content:flex-end">
+              <button class="btn-ghost" style="color:var(--red);font-size:11px" onclick="removeLumpsum(this)">항목 삭제</button>
+            </div>
+          </div>
+
+        </div>
+
+        <button class="btn btn-sm" onclick="addLumpsum()" style="margin-bottom:16px">+ 일시불 항목 추가</button>
+
+        <!-- 합계 -->
+        <div style="padding:14px;background:var(--purple-lt, #EEEDFE);border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:600;color:var(--purple)">총 일시불 지급 합계</div>
+          <div style="font-size:20px;font-weight:700;color:var(--purple)" id="lumpsum-total">3.0억원</div>
+        </div>
+
+        <div class="fg"><label>전체 협상 메모</label>
+          <textarea class="fc" style="min-height:80px" placeholder="일시불 지급 전반에 대한 협상 경과, 승인 과정 등...">팀장 승인 완료 (2026.04.18). 법무팀 계약서 검토 중. 5월중 계약 체결 예정.</textarea>
+        </div>
+        <button class="btn btn-p btn-sm">일시불 조건 저장</button>
+      </div>
+    </div>
+
+    <!-- 탭7: 약정 CR (LTA) -->
+    <div class="tab-pane" id="t-lta">
+      <div class="card">
+        <div class="card-hd"><div class="card-title">약정 단가 인하 조건 (LTA)</div><span class="badge b-purple">초기</span></div>
+       <div class="card" style="font-size:14px;margin-bottom:12px">품번 : 25414-9X000</div>
+        <div class="lta-box">
+          <div class="lta-hd">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1L9.8 6H15l-4.1 3 1.6 5L8 11l-4.5 3 1.6-5L1 6h5.2z" stroke="#3C3489" stroke-width="1.3"/></svg>
+            LTA 인하 조건 설정 — 구간별 인하율 입력 후 자동 계산
+          </div>
+          <div class="fr3">
+            <div><div style="font-size:10px;color:var(--purple);opacity:.7">기준 판가 (Y0)</div><div style="font-size:13px;font-weight:600;color:var(--purple)" id="lta-base-display">15,000 원</div></div>
+            <div><div style="font-size:10px;color:var(--purple);opacity:.7">계약 체결일</div><div style="font-size:13px;font-weight:600;color:var(--purple)">2026.04.20</div></div>
+            <div><div style="font-size:10px;color:var(--purple);opacity:.7">총 인하 구간</div><div style="font-size:13px;font-weight:600;color:var(--purple)" id="lta-total-bands">2구간</div></div>
+          </div>
+        </div>
+
+        <!-- LTA 조건 입력 (단일 조건) -->
+        <div class="card-title" style="font-size:12px;margin-bottom:12px">인하 조건</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg);border-radius:8px;border:1px solid var(--border);margin-bottom:16px">
+          <span style="font-size:13px;color:var(--text2);white-space:nowrap">연간 인하율</span>
+          <input type="number" id="lta-rate" value="3" min="0" max="30" step="0.1" style="width:70px;padding:7px 10px;border:1px solid var(--border2);border-radius:7px;font-size:16px;font-weight:700;color:var(--red);text-align:center" oninput="calcLTA()">
+          <span style="font-size:14px;font-weight:600;color:var(--text2)">%  ×</span>
+          <input type="number" id="lta-years" value="2" min="1" max="10" style="width:60px;padding:7px 10px;border:1px solid var(--border2);border-radius:7px;font-size:16px;font-weight:700;text-align:center" oninput="calcLTA()">
+          <span style="font-size:14px;font-weight:600;color:var(--text2)">년</span>
+          <div style="margin-left:16px;padding:8px 14px;background:var(--purple-lt,#EEEDFE);border-radius:7px;font-size:12px;color:var(--purple);font-weight:600" id="lta-summary">연 2.0% × 3년</div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label>기준 판가 (Y0, 원)</label><input class="fc" id="lta-base" value="15,000" oninput="calcLTA()"></div>
+          <div class="fg"><label>LTA 연도 (시작 시점)</label><input type="date" class="fc" id="lta-sop" value="2029-01-01" oninput="calcLTA()"></div>
+        </div>
+
+        <!-- 자동 계산 결과 테이블 -->
+        <div class="fg"><label>연도별 적용 판가 (자동 계산)</label></div>
+        <table style="margin-bottom:14px" id="lta-result-table">
+          <thead><tr><th>연도</th><th>기준가</th><th>인하율</th><th>적용 판가</th><th>구간</th></tr></thead>
+          <tbody id="lta-tbody"></tbody>
+        </table>
+
+        <div class="fg"><label>LTA 특이조건 및 협상 메모</label>
+          <textarea class="fc" style="min-height:80px" placeholder="협상 과정, 예외 조건, 재협상 트리거 등...">고객 요청: 2% x 3y, 타 XX차종 통합 수주 조건</textarea>
+        </div>
+        <button class="btn btn-p btn-sm" onclick="calcLTA()">LTA 조건 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 진행 보드 (칸반) ============ -->
+  <div class="page" id="page-kanban">
+    <div class="filter-bar" style="margin-bottom:16px">
+      <select><option>전체 담당자</option><option>김형석</option><option>김권지</option><option>이현주</option></select>
+      <select><option>전체 제품군</option><option>저압</option><option>고압</option><option>A/C</option><option>W/S</option></select>
+    </div>
+    <div class="kanban">
+      <div class="kb-col">
+        <div class="kb-col-hd"><span style="color:var(--gray)">접수</span><span class="badge b-gray">4</span></div>
+        <div class="kb-card" onclick="openDetail('2026-03-28-2-1')">
+          <div class="kb-id">2026-03-28-2-1</div>
+          <div class="kb-co">HMG 화성</div>
+          <div class="kb-sub">CV2 · 고압 · 25,000대</div>
+          <div class="kb-foot"><span style="font-size:11px;color:var(--text3)">김권지</span><span class="badge b-gray">D-3</span></div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-id">2026-03-10-1-1</div>
+          <div class="kb-co">RKM</div>
+          <div class="kb-sub">XM3 · A/C · 12,000대</div>
+          <div class="kb-foot"><span style="font-size:11px;color:var(--text3)">이현주</span><span class="badge b-gray">D-14</span></div>
+        </div>
+      </div>
+      <div class="kb-col">
+        <div class="kb-col-hd"><span style="color:var(--blue-dk)">진행중</span><span class="badge b-blue">12</span></div>
+        <div class="kb-card" onclick="openDetail('2026-03-31-1-1')" style="border-left:3px solid var(--red)">
+          <div class="kb-id">2026-03-31-1-1</div>
+          <div class="kb-co">HMG 울산</div>
+          <div class="kb-sub">NQ7 · 저압 · 10,000대</div>
+          <div class="kb-foot"><span style="font-size:11px;color:var(--text3)">김형석</span><span class="badge b-red">D-1</span></div>
+        </div>
+        <div class="kb-card" onclick="openDetail('2026-03-28-2-1')" style="border-left:3px solid var(--blue)">
+           <div class="kb-id">2026-03-28-2-1</div>
+           <div class="kb-co">HMG 화성</div>
+           <div class="kb-sub">CV2 · 고압 · 25,000대</div>
+           <div class="kb-foot"><span style="font-size:11px;color:var(--text3)">김권지</span><span class="badge b-blue">수심위</span></div>
+        </div>
+        <div class="kb-card" onclick="openDetail('2026-03-25-1-2')" style="border-left:3px solid var(--amber)">
+          <div class="kb-id">2026-03-25-1-2</div>
+          <div class="kb-co">BMW</div>
+          <div class="kb-sub">G26 · B/H · 8,500대</div>
+          <div class="kb-foot"><span style="font-size:11px;color:var(--text3)">이현주</span><span class="badge b-amber">D-5</span></div>
+        </div>
+      </div>
+      <div class="kb-col">
+        <div class="kb-col-hd"><span style="color:var(--green)">수주</span><span class="badge b-green">5</span></div>
+        <div class="kb-card" onclick="openDetail('2026-03-20-1-1')">
+          <div class="kb-id">2026-03-20-1-1</div>
+          <div class="kb-co">HMG 울산</div>
+          <div class="kb-sub">OS · 저압 · 75,000대</div>
+          <div class="kb-foot"><span style="font-size:11px;color:var(--text3)">김형석</span><span class="badge b-green">수주</span></div>
+        </div>
+      </div>
+      <div class="kb-col">
+        <div class="kb-col-hd"><span style="color:var(--amber)">Holding</span><span class="badge b-amber">6</span></div>
+        <div class="kb-card" onclick="openDetail('2026-03-22-3-1')">
+          <div class="kb-id">2026-03-22-3-1</div>
+          <div class="kb-co">GM</div>
+          <div class="kb-sub">9BXX · W/S · 18,000대</div>
+          <div class="kb-foot"><span style="font-size:11px;color:var(--text3)">김권지</span><span class="badge b-amber">고객 대기</span></div>
+        </div>
+      </div>
+      <div class="kb-col">
+        <div class="kb-col-hd"><span style="color:var(--red)">실패 / Drop</span><span class="badge b-red">15</span></div>
+        <div class="kb-card" onclick="openDetail('2026-03-15-3-1')">
+          <div class="kb-id">2026-03-15-3-1</div>
+          <div class="kb-co">GM</div>
+          <div class="kb-sub">9UXX · W/S · 실패</div>
+          <div class="kb-foot"><span style="font-size:11px;color:var(--text3)">김권지</span><span class="badge b-red">실패</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 수주 분석 ============ -->
+  <div class="page" id="page-analytics">
+    <div class="filter-bar">
+      <select><option>2026년</option><option>2025년</option><option>2024년</option></select>
+      <select><option>전체 분기</option><option>Q1</option><option>Q2</option><option>Q3</option><option>Q4</option></select>
+      <select><option>전체 고객사</option><option>HMG</option><option>STLS</option><option>BMW</option><option>GM</option></select>
+      <select><option>전체 담당자</option><option>김형석</option><option>김권지</option><option>이현주</option></select>
+      <select><option>전체 제품군</option><option>저압</option><option>고압</option><option>A/C</option><option>W/S</option></select>
+      <button class="btn btn-p btn-sm">조회</button>
+    </div>
+    <div class="fr4" style="margin-bottom:16px">
+      <div class="sc"><div class="sc-label">조회 기간 RFQ</div><div class="sc-val" style="color:var(--blue)">58</div><div class="sc-sub">2026년 전체</div></div>
+      <div class="sc"><div class="sc-label">수주</div><div class="sc-val" style="color:var(--green)">28</div><div class="sc-sub">수주율 64.2%</div></div>
+      <div class="sc"><div class="sc-label">실패</div><div class="sc-val" style="color:var(--red)">10</div><div class="sc-sub">주요 사유: 가격 열위</div></div>
+      <div class="sc"><div class="sc-label">수주액</div><div class="sc-val" style="color:var(--purple)">612억</div><div class="sc-sub">평균 이익율 5.8%</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="card">
+        <div class="card-hd"><div class="card-title">고객사별 수주율</div></div>
+        <div class="bar-row"><div class="bar-lbl">HMG</div><div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--blue)"></div></div><div class="bar-val" style="color:var(--green)">71%</div></div>
+        <div class="bar-row"><div class="bar-lbl">STLS</div><div class="bar-track"><div class="bar-fill" style="width:64%;background:var(--blue)"></div></div><div class="bar-val">64%</div></div>
+        <div class="bar-row"><div class="bar-lbl">BMW</div><div class="bar-track"><div class="bar-fill" style="width:53%;background:var(--amber)"></div></div><div class="bar-val">53%</div></div>
+        <div class="bar-row"><div class="bar-lbl">GM</div><div class="bar-track"><div class="bar-fill" style="width:42%;background:var(--red)"></div></div><div class="bar-val" style="color:var(--red)">42%</div></div>
+        <div class="bar-row"><div class="bar-lbl">RKM</div><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--blue)"></div></div><div class="bar-val">60%</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><div class="card-title">실패 사유 분포</div></div>
+        <div class="bar-row"><div class="bar-lbl" style="width:90px">가격 열위</div><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--red)"></div></div><div class="bar-val">6건</div></div>
+        <div class="bar-row"><div class="bar-lbl" style="width:90px">고객 정책</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--amber)"></div></div><div class="bar-val">2건</div></div>
+        <div class="bar-row"><div class="bar-lbl" style="width:90px">Capa 부족</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:var(--gray)"></div></div><div class="bar-val">1건</div></div>
+        <div class="bar-row"><div class="bar-lbl" style="width:90px">기타</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:var(--gray)"></div></div><div class="bar-val">1건</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><div class="card-title">팀별 수주 실적</div></div>
+        <table>
+          <thead><tr><th>팀</th><th>총 RFQ</th><th>수주</th><th>수주율</th><th>수주액(억)</th><th>평균이익율</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:500">FL영업</td><td>38</td><td>24</td><td style="color:var(--green)">63.2%</td><td>485</td><td>6.1%</td></tr>
+            <tr><td style="font-weight:500">SL영업</td><td>32</td><td>18</td><td style="color:var(--green)">56.3%</td><td>362</td><td>5.6%</td></tr>
+            <tr><td style="font-weight:500">디트로이트</td><td>18</td><td>8</td><td style="color:var(--amber)">44.4%</td><td>210</td><td>5.0%</td></tr>
+            <tr><td style="font-weight:500">프랑크푸르트</td><td>12</td><td>4</td><td style="color:var(--amber)">33.3%</td><td>143</td><td>4.7%</td></tr>
+            <tr><td style="font-weight:500">HSI영업</td><td>14</td><td>6</td><td style="color:var(--amber)">42.9%</td><td>170</td><td>5.2%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-hd"><div class="card-title">기간별 수주 트렌드 (월)</div></div>
+        <div style="display:flex;align-items:flex-end;gap:8px;height:110px;padding-top:10px">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="flex:1;width:100%;background:var(--blue);border-radius:3px 3px 0 0;height:60%"></div><div style="font-size:10px;color:var(--text3)">1월</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="flex:1;width:100%;background:var(--blue);border-radius:3px 3px 0 0;height:45%"></div><div style="font-size:10px;color:var(--text3)">2월</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="flex:1;width:100%;background:var(--blue);border-radius:3px 3px 0 0;height:80%"></div><div style="font-size:10px;color:var(--text3)">3월</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="flex:1;width:100%;background:var(--blue-lt);border-radius:3px 3px 0 0;height:30%"></div><div style="font-size:10px;color:var(--text3)">4월</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="flex:1;width:100%;background:var(--blue-lt);border-radius:3px 3px 0 0;height:15%"></div><div style="font-size:10px;color:var(--text3)">5월</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="flex:1;width:100%;background:var(--blue-lt);border-radius:3px 3px 0 0;height:5%"></div><div style="font-size:10px;color:var(--text3)">6월</div></div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:6px;text-align:right">■ 확정 &nbsp; □ 집계 중</div>
+      </div>
+    </div>
+
+    <!-- 성공/실패 조회 테이블 -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-title">수주·실패 상세 내역 조회</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm" onclick="filterResult('all')" id="f-all" style="background:var(--blue);color:#fff;border-color:var(--blue)">전체</button>
+          <button class="btn btn-sm" onclick="filterResult('won')" id="f-won">수주만</button>
+          <button class="btn btn-sm" onclick="filterResult('lost')" id="f-lost">실패만</button>
+        </div>
+      </div>
+      <table class="tbl-hover">
+        <thead><tr><th>RFQ</th><th>업체</th><th>차종</th><th>제품군</th><th>담당</th><th>매출(억)</th><th>이익율</th><th>실패사유 요약</th><th>결과</th><th>확정일</th></tr></thead>
+        <tbody id="result-tbody">
+          <tr data-result="won" onclick="openDetail('2026-03-20-1-1')"><td><span class="rid">2026-03-20-1-1</span></td><td>HMG 울산</td><td>OS</td><td>저압</td><td>김형석</td><td style="color:var(--blue);font-weight:500">187</td><td style="color:var(--green)">6.8%</td><td>—</td><td><span class="badge b-green">수주</span></td><td>2026.03.28</td></tr>
+          <tr data-result="lost" onclick="openDetail('2026-03-15-3-1')"><td><span class="rid">2026-03-15-3-1</span></td><td>GM</td><td>9BXX</td><td>W/S</td><td>김권지</td><td>—</td><td>—</td><td style="color:var(--red)">가격 경쟁 열위</td><td><span class="badge b-red">실패</span></td><td>2026.03.25</td></tr>
+          <tr data-result="won" onclick="openDetail('2026-02-10-2-1')"><td><span class="rid">2026-02-10-2-1</span></td><td>HMG 화성</td><td>EV3</td><td>고압</td><td>김권지</td><td style="color:var(--blue);font-weight:500">95</td><td style="color:var(--green)">5.1%</td><td>—</td><td><span class="badge b-green">수주</span></td><td>2026.03.10</td></tr>
+          <tr data-result="lost"><td><span class="rid">2026-01-05-1-1</span></td><td>BMW</td><td>G20</td><td>B/H</td><td>이현주</td><td>—</td><td>—</td><td style="color:var(--red)">Capa 부족</td><td><span class="badge b-red">실패</span></td><td>2026.02.20</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ 누적 수주 현황 ============ -->
+  <div class="page" id="page-cumulative">
+    <div class="filter-bar">
+      <select><option>전체 기간</option><option>2026년</option><option>2025년</option><option>2024년</option></select>
+      <select><option>전체 고객사</option><option>HMG</option><option>STLS</option><option>BMW</option><option>GM</option></select>
+      <select><option>전체 제품군</option><option>저압</option><option>고압</option><option>A/C</option><option>W/S</option></select>
+      <button class="btn btn-p btn-sm">조회</button>
+    </div>
+    <div class="fr4" style="margin-bottom:16px">
+      <div class="sc"><div class="sc-label">누적 수주 건수</div><div class="sc-val" style="color:var(--blue)">247</div><div class="sc-sub">2023년~현재</div></div>
+      <div class="sc"><div class="sc-label">누적 수주액</div><div class="sc-val" style="color:var(--purple)">4,730억</div><div class="sc-sub">목표 대비 91%</div></div>
+      <div class="sc"><div class="sc-label">평균 수주율</div><div class="sc-val" style="color:var(--green)">62.4%</div><div class="sc-sub">목표 65%</div></div>
+      <div class="sc"><div class="sc-label">평균 이익율</div><div class="sc-val" style="color:var(--green)">5.6%</div><div class="sc-sub">목표 6.0%</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px">
+      <div class="card">
+        <div class="card-hd"><div class="card-title">연도별 수주액 추이 (억원)</div></div>
+        <div style="display:flex;align-items:flex-end;gap:14px;height:130px;padding-top:10px">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:100%;background:var(--blue);border-radius:4px 4px 0 0" style2="height:55%"></div><div style="font-size:11px;font-weight:500">1,230</div><div style="font-size:10px;color:var(--text3)">2023</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:100%;background:var(--blue);border-radius:4px 4px 0 0"></div><div style="font-size:11px;font-weight:500">1,520</div><div style="font-size:10px;color:var(--text3)">2024</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:100%;background:var(--blue);border-radius:4px 4px 0 0"></div><div style="font-size:11px;font-weight:500">1,470</div><div style="font-size:10px;color:var(--text3)">2025</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:100%;background:var(--blue-lt);border-radius:4px 4px 0 0"></div><div style="font-size:11px;font-weight:500;color:var(--blue)">612<span style="font-size:9px"> (진행중)</span></div><div style="font-size:10px;color:var(--text3)">2026</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><div class="card-title">제품군별 누적 수주액</div></div>
+        <div class="bar-row"><div class="bar-lbl">저압</div><div class="bar-track"><div class="bar-fill" style="width:75%;background:var(--blue)"></div></div><div class="bar-val">1,840억</div></div>
+        <div class="bar-row"><div class="bar-lbl">고압</div><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--blue)"></div></div><div class="bar-val">1,220억</div></div>
+        <div class="bar-row"><div class="bar-lbl">A/C</div><div class="bar-track"><div class="bar-fill" style="width:40%;background:var(--teal)"></div></div><div class="bar-val">980억</div></div>
+        <div class="bar-row"><div class="bar-lbl">W/S</div><div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--amber)"></div></div><div class="bar-val">690억</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><div class="card-title">고객사별 누적 수주 현황</div></div>
+      <table>
+        <thead><tr><th>고객사</th><th>총 RFQ</th><th>수주 건수</th><th>수주율</th><th>누적 수주액(억)</th><th>평균 이익율</th><th>LTA 조건</th><th>최근 수주</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:600">HMG</td><td>82</td><td>58</td><td style="color:var(--green);font-weight:500">70.7%</td><td style="color:var(--blue);font-weight:500">1,970</td><td>6.1%</td><td><span class="badge b-purple">4건</span></td><td>2026.03.28</td></tr>
+          <tr><td style="font-weight:600">STLS</td><td>55</td><td>35</td><td style="color:var(--green)">63.6%</td><td style="color:var(--blue);font-weight:500">1,280</td><td>5.8%</td><td><span class="badge b-purple">2건</span></td><td>2026.03.10</td></tr>
+          <tr><td style="font-weight:600">BMW</td><td>38</td><td>18</td><td style="color:var(--amber)">47.4%</td><td>820</td><td>5.2%</td><td><span class="badge b-gray">0건</span></td><td>2025.11.05</td></tr>
+          <tr><td style="font-weight:600">GM</td><td>42</td><td>17</td><td style="color:var(--red)">40.5%</td><td>660</td><td>4.9%</td><td><span class="badge b-gray">0건</span></td><td>2025.09.20</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ RFQ 등록 ============ -->
+  <div class="page" id="page-rfqnew">
+    <div class="steps" id="step-bar">
+      <div class="step cur" id="step-1" onclick="goStep(1)">1 기본 정보</div>
+      <div class="step" id="step-2" onclick="goStep(2)">2 견적 작성</div>
+      <div class="step" id="step-3" onclick="goStep(3)">3 파일 첨부</div>
+    </div>
+
+    <div id="rfq-step-1">
+      <div class="card">
+        <div class="card-hd"><div class="card-title">기본 정보 입력</div></div>
+        <div class="fr2">
+          <div class="fg"><label>구분 *</label><select class="fc"><option>RFQ</option><option>RFI</option><option>RFP</option><option>사전SR</option></select></div>
+          <div class="fg"><label>RHQ</label><select class="fc"><option>KRHQ</option><option>ARHQ</option><option>ERHQ</option></select></div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label>업체코드 / 업체명 *</label><input class="fc" placeholder="코드 또는 검색"></div>
+          <div class="fg"><label>고객사 PLANT</label><input class="fc" placeholder="예: HMG 울산 5공장"></div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label>차종 (프로젝트명) *</label><input class="fc" placeholder="복수 가능 (예: NQ7, NXX)"></div>
+          <div class="fg"><label>SOP *</label><input type="date" class="fc"></div>
+        </div>
+         <div class="fr2">
+          <div class="fg"><label>생산대수/년 *</label><input class="fc" placeholder="숫자만 입력"></div>
+          <div class="fg"><label>입찰구분 *</label><select class="fc"><option>경쟁</option><option>심의</option><option>전략</option></select></div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label>제품군 *</label><select class="fc"><option>저압</option><option>고압</option><option>A/C</option><option>W/S</option><option>G/R</option><option>MOLD'G류</option></select></div>
+          <div class="fg"><label>수주 Type *</label><select class="fc"><option>신규</option><option>C.O</option></select></div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label>당사 생산지</label><select class="fc"><option>R&A</option><option>HSI</option><option>HSID</option><option>HSIA</option><option>HSAM</option></select></div>
+          <div class="fg"><label>INCOTERMS</label><input class="fc" placeholder="예: FCA R&A"></div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label>견적 접수일 *</label><input type="date" class="fc"></div>
+          <div class="fg"><label>견적 마감일 *</label><input type="date" class="fc"></div>
+        </div>
+        <div class="fr2">
+            <div class="fg"><label>경쟁사</label>
+            <div style="display:flex;flex-direction:column;gap:6px" id="competitor-list">
+              <div style="display:flex;gap:6px;align-items:center">
+                <input class="fc" placeholder="경쟁사명 입력" style="flex:1">
+                <button class="btn-ghost" style="color:var(--red);font-size:16px;line-height:1" onclick="removeCompetitor(this)">−</button>
+              </div>
+            </div>
+            <button class="btn btn-sm" onclick="addCompetitor()" style="margin-top:6px;font-size:11px">+ 경쟁사 추가</button>
+          </div>
+          <div class="fg"><label>담당자 *</label><select class="fc"><option>김형석 (FL영업)</option><option>김권지 (SL영업)</option><option>이현주 (FL영업)</option></select></div>
+        </div>
+        
+        <div style="margin-top:4px;margin-bottom:14px;padding:12px 14px;background:var(--bg);border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:13px;font-weight:600">수심위 (수주심의위원회) 검토 대상</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">활성화 시 '진행중' 상태에 수심위 검토가 포함됩니다.</div>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+            <input type="checkbox" id="sumsimwi-toggle" style="opacity:0;width:0;height:0" onchange="onSumsimwi(this.checked)">
+            <span id="sumsimwi-track" style="position:absolute;top:0;left:0;right:0;bottom:0;background:#ccc;border-radius:24px;transition:.2s"></span>
+            <span id="sumsimwi-thumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.2s"></span>
+          </label>
+        </div>
+        
+        <div style="display:flex;justify-content:flex-end;margin-top:6px">
+          <button class="btn btn-p" onclick="goStep(2)">다음 — 견적 작성 →</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="rfq-step-2" style="display:none">
+      <div id="quote-info-banner" style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:#E6F1FB;border-radius:8px;border:1px solid #B5D4F4;margin-bottom:10px;font-size:12px;flex-wrap:wrap"></div>
+      <div class="card" style="padding:14px 18px;margin-bottom:12px">
+        <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap">
+            <div class="fg" style="min-width:140px; margin-bottom:0">
+                <label style="font-weight:600;color:var(--text2)">진행 상태 *</label>
+                <select class="fc" id="new-status" onchange="onNewStatus(this.value)" style="padding:5px 10px;font-size:12px">
+                <option>접수</option><option selected>진행중</option><option>수주</option><option>실패</option><option>Drop</option><option>Holding</option>
+                </select>
+            </div>
+            <div id="new-status-details" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;flex:1">
+                 <div class="fg" style="min-width:120px; margin-bottom:0">
+                    <label style="font-weight:600;color:var(--text2)">견적 차수 *</label>
+                    <select class="fc" style="padding:5px 10px;font-size:12px"><option>1차</option><option selected>2차</option><option>3차</option><option>추가</option></select>
+                 </div>
+                 <div class="fg" style="min-width:150px; margin-bottom:0">
+                    <label style="font-weight:600;color:var(--text2)">견적 마감일 *</label>
+                    <input type="date" class="fc" value="2026-04-14" style="padding:5px 10px;font-size:12px">
+                </div>
+            </div>
+             <div id="new-fail-wrap" style="display:none;flex:1">
+                <div class="fg" style="margin-bottom:0">
+                    <label style="font-weight:600;color:var(--text2)">사유 요약</label>
+                    <input class="fc" placeholder="실패 또는 Drop 사유 요약..." style="font-size:12px;padding:5px 10px">
+                </div>
+             </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">견적 작성 (Y0~Y5)</div>
+          <div style="display:flex;gap:8px"><button class="btn btn-sm">Excel 내보내기</button><button class="btn btn-sm">PDF 미리보기</button></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;padding:10px 14px;background:var(--bg);border-radius:7px;margin-bottom:12px;flex-wrap:wrap">
+          <span style="font-size:11px;font-weight:600;color:var(--text2)">통화 / 환율</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <label style="font-size:11px;color:var(--text2)">통화</label>
+            <select id="q-currency" style="padding:4px 8px;border:1px solid var(--border2);border-radius:6px;font-size:12px;font-weight:600;background:#fff;color:var(--text)" onchange="onCurrencyChange(this.value)">
+              <option value="KRW">KRW (원)</option><option value="USD">USD (달러)</option><option value="EUR">EUR (유로)</option><option value="CNY">CNY (위안)</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px" id="exchange-rate-wrap" style="display:none">
+            <label style="font-size:11px;color:var(--text2)">원화 환율</label>
+            <input id="q-rate" type="text" value="1,350" style="width:90px;padding:4px 8px;border:1px solid var(--border2);border-radius:6px;font-size:12px;font-weight:600;background:#fff;color:var(--text)">
+            <span style="font-size:11px;color:var(--text2)">원 / 1단위</span>
+          </div>
+          <div style="font-size:11px;color:var(--text3)" id="currency-note">수량: 대/년 &nbsp;|&nbsp; 원가·판가: 원 (KRW) &nbsp;|&nbsp; 천단위 구분 콤마 적용</div>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="min-width:1300px;border-collapse:collapse;table-layout:fixed">
+            <colgroup><col style="width:88px"><col style="width:100px"><col style="width:95px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"><col style="width:56px"></colgroup>
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align:middle;border:1px solid var(--border);padding:6px 6px;font-size:11px">품번</th>
+                <th rowspan="2" style="vertical-align:middle;border:1px solid var(--border);padding:6px 6px;font-size:11px">품명</th>
+                <th rowspan="2" style="vertical-align:middle;border:1px solid var(--border);padding:6px 6px;font-size:11px">라인</th>
+                <th colspan="6" style="text-align:center;border:1px solid var(--border);padding:5px;color:var(--blue);font-size:11px">수량 (대/년)</th>
+                <th colspan="6" style="text-align:center;border:1px solid var(--border);padding:5px;color:var(--amber);font-size:11px">원가 <span id="hd-cost-unit">(원)</span></th>
+                <th colspan="6" style="text-align:center;border:1px solid var(--border);padding:5px;color:var(--green);font-size:11px">판가 <span id="hd-price-unit">(원)</span></th>
+              </tr>
+              <tr>
+                <th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y0</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y1</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y2</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y3</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y4</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y5</th>
+                <th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y0</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y1</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y2</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y3</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y4</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y5</th>
+                <th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y0</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y1</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y2</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y3</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y4</th><th style="text-align:center;border:1px solid var(--border);padding:3px;font-size:10px">Y5</th>
+              </tr>
+            </thead>
+            <tbody id="quote-tbody"></tbody>
+          </table>
+        </div>
+        <div style="margin-top:10px"><button class="btn btn-sm" onclick="addRow()">+ 품번 행 추가</button></div>
+        <div class="fr4" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+          <div class="sc"><div class="sc-label">매출액 (억원)</div><div class="sc-val" style="font-size:17px;color:var(--blue)" id="c-sales">—</div></div>
+          <div class="sc"><div class="sc-label">이익금액 (억원)</div><div class="sc-val" style="font-size:17px;color:var(--green)" id="c-profit">—</div></div>
+          <div class="sc"><div class="sc-label">초기 이익율 (Y0)</div><div class="sc-val" style="font-size:17px;color:var(--green)" id="c-r1">—</div></div>
+          <div class="sc"><div class="sc-label">평균 이익율</div><div class="sc-val" style="font-size:17px;color:var(--green)" id="c-r2">—</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><div class="card-title">투자비 내역</div></div>
+        <div class="fr2">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">설비 투자비 <button class="btn btn-sm" style="font-size:11px" onclick="addInvRow('equip-tbody','설비 항목')">+ 추가</button></div>
+            <table class="inv-tbl" style="width:100%">
+              <thead><tr><th>항목명</th><th>수량</th><th>금액(억)</th><th></th></tr></thead>
+              <tbody id="equip-tbody">
+                <tr><td><input class="fc" value="프레스 설비" oninput="calcInvTotal()"></td><td><input class="fc" value="8대" style="width:60px" oninput="calcInvTotal()"></td><td><input class="fc" value="4.0" style="width:65px" oninput="calcInvTotal()"></td><td><button class="btn-ghost" style="color:var(--red)" onclick="removeInvRow(this)">✕</button></td></tr>
+                <tr><td><input class="fc" value="지그류" oninput="calcInvTotal()"></td><td><input class="fc" value="4개" style="width:60px" oninput="calcInvTotal()"></td><td><input class="fc" value="1.2" style="width:65px" oninput="calcInvTotal()"></td><td><button class="btn-ghost" style="color:var(--red)" onclick="removeInvRow(this)">✕</button></td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:8px;text-align:right;font-size:13px;font-weight:600">설비 합계: <span style="color:var(--blue)" id="equip-total">5.2억</span></div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">금형비<button class="btn btn-sm" style="font-size:11px" onclick="addInvRow('mold-tbody','금형 항목')">+ 추가</button></div>
+            <table class="inv-tbl" style="width:100%">
+              <thead><tr><th>항목명</th><th>수량</th><th>금액(억)</th><th></th></tr></thead>
+              <tbody id="mold-tbody">
+                <tr><td><input class="fc" value="사출금형 A타입" oninput="calcInvTotal()"></td><td><input class="fc" value="2개" style="width:60px" oninput="calcInvTotal()"></td><td><input class="fc" value="2.4" style="width:65px" oninput="calcInvTotal()"></td><td><button class="btn-ghost" style="color:var(--red)" onclick="removeInvRow(this)">✕</button></td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:6px"><div class="radio-group"><label><input type="radio" name="mold-n" checked> 일시불</label><label><input type="radio" name="mold-n"> 상각</label></div></div>
+            <div style="margin-top:8px;text-align:right;font-size:13px;font-weight:600">금형 합계: <span style="color:var(--blue)" id="mold-total">2.4억</span></div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);text-align:right;font-size:14px;font-weight:600">총 투자비: <span style="color:var(--purple)" id="inv-grand-total">7.6억</span></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="goStep(1)">← 이전</button>
+        <button class="btn btn-p" style="margin-left:auto" onclick="goStep(3)">다음 — 파일 첨부 →</button>
+      </div>
+    </div>
+
+    <div id="rfq-step-3" style="display:none">
+      <div class="card">
+        <div class="card-hd"><div class="card-title">파일 첨부</div></div>
+        <div class="file-drop" onclick="alert('파일 다이얼로그 연결 예정')" style="border:1.5px dashed var(--border2);border-radius:8px;padding:24px;text-align:center;color:var(--text2);font-size:13px;cursor:pointer;background:var(--bg)">
+          <div style="font-size:24px;margin-bottom:8px">📂</div>
+          클릭 또는 드래그하여 파일 업로드<br>
+          <span style="font-size:11px;color:var(--text3)">도면, 사양서, RFQ 원문, 수기 견적서 등</span>
+        </div>
+        <div style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:6px;font-size:12px;margin-bottom:6px"><span>📄 RFQ_HMG_NQ7_원문.pdf</span><button class="btn-ghost" style="color:var(--red);font-size:11px">삭제</button></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button class="btn" onclick="goStep(2)">← 이전</button>
+          <button class="btn btn-p" style="margin-left:auto" onclick="submitRfq()">RFQ 등록 완료</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 고객사 관리 ============ -->
+  <div class="page" id="page-customers">
+    <div class="card" style="padding:0">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px">
+        <input type="text" placeholder="고객사 검색" style="width:200px;padding:6px 10px;border:1px solid var(--border2);border-radius:7px;font-size:12px">
+        <select style="padding:6px 10px;border:1px solid var(--border2);border-radius:7px;font-size:12px"><option>전체 지역</option><option>한국</option><option>중국</option><option>미주</option></select>
+      </div>
+      <table class="tbl-hover">
+        <thead><tr><th>업체코드</th><th>업체명</th><th>지역</th><th>담당자</th><th>총 RFQ</th><th>수주율</th><th>누적 수주액</th><th>LTA</th><th>최근 거래</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:monospace;font-size:11px">100762</td><td style="font-weight:600">HMG 울산</td><td>한국</td><td>김형석</td><td>82</td><td style="color:var(--green);font-weight:500">71%</td><td style="color:var(--blue)">1,970억</td><td><span class="badge b-purple">4건</span></td><td>2026.03.31</td></tr>
+          <tr><td style="font-family:monospace;font-size:11px">100845</td><td style="font-weight:600">HMG자동차 화성</td><td>한국</td><td>김권지</td><td>55</td><td style="color:var(--green)">64%</td><td style="color:var(--blue)">1,280억</td><td><span class="badge b-purple">2건</span></td><td>2026.03.28</td></tr>
+          <tr><td style="font-family:monospace;font-size:11px">200112</td><td style="font-weight:600">BMW AG Munich</td><td>미주/유럽</td><td>이현주</td><td>38</td><td style="color:var(--amber)">47%</td><td>820억</td><td><span class="badge b-gray">없음</span></td><td>2025.11.05</td></tr>
+          <tr><td style="font-family:monospace;font-size:11px">100991</td><td style="font-weight:600">GM Korea 창원</td><td>한국</td><td>김권지</td><td>42</td><td style="color:var(--red)">40%</td><td>660억</td><td><span class="badge b-gray">없음</span></td><td>2025.09.20</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- ============ 담당자 관리 ============ -->
+  <div class="page" id="page-admins">
+    <div class="card" style="padding:0">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;gap:8px">
+            <input type="text" placeholder="담당자명 검색" style="width:200px;padding:6px 10px;border:1px solid var(--border2);border-radius:7px;font-size:12px">
+            <select style="padding:6px 10px;border:1px solid var(--border2);border-radius:7px;font-size:12px"><option>전체 소속팀</option><option>FL영업</option><option>SL영업</option><option>디트로이트</option><option>프랑크푸르트</option></select>
+        </div>
+        <button class="btn btn-sm" id="btn-show-admin-form" onclick="toggleAdminForm(true)">+ 새 담당자 추가</button>
+      </div>
+      <table class="tbl-hover" id="admin-table">
+        <thead><tr><th>ID</th><th>이름</th><th>소속팀</th><th>직책</th><th>권한</th><th>이메일</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr data-id="KHS01" onclick="selectAdminRow(this)"><td>KHS01</td><td>김형석</td><td>FL영업</td><td>팀원</td><td>일반</td><td>hs.kim@hwaseung.co.kr</td><td><span class="badge b-green">활성</span></td></tr>
+          <tr data-id="KKJ01" onclick="selectAdminRow(this)"><td>KKJ01</td><td>김권지</td><td>SL영업</td><td>팀원</td><td>일반</td><td>kj.kim@hwaseung.co.kr</td><td><span class="badge b-green">활성</span></td></tr>
+          <tr data-id="LHJ01" onclick="selectAdminRow(this)"><td>LHJ01</td><td>이현주</td><td>FL영업</td><td>팀원</td><td>일반</td><td>hj.lee@hwaseung.co.kr</td><td><span class="badge b-green">활성</span></td></tr>
+          <tr data-id="PJB01" onclick="selectAdminRow(this)"><td>PJB01</td><td>박부장</td><td>FL영업</td><td>팀장</td><td>관리자</td><td>jb.park@hwaseung.co.kr</td><td><span class="badge b-green">활성</span></td></tr>
+          <tr data-id="LKM01" onclick="selectAdminRow(this)"><td>LKM01</td><td>이과장</td><td>구매</td><td>과장</td><td>일반</td><td>km.lee@hwaseung.co.kr</td><td><span class="badge b-red">휴면</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="admin-form-card" class="card" style="display:none; margin-top:16px;">
+        <div class="card-hd"><div class="card-title" id="admin-form-title">새 담당자 추가</div><button class="btn-ghost" style="font-size:14px" onclick="toggleAdminForm(false)">✕</button></div>
+        <div class="fr3">
+            <div class="fg"><label>ID *</label><input class="fc" id="f-admin-id"></div>
+            <div class="fg"><label>이름 *</label><input class="fc" id="f-admin-name"></div>
+            <div class="fg"><label>이메일 *</label><input class="fc" id="f-admin-email" type="email"></div>
+        </div>
+         <div class="fr3">
+            <div class="fg"><label>소속팀</label><input class="fc" id="f-admin-team"></div>
+            <div class="fg"><label>직책</label><input class="fc" id="f-admin-pos"></div>
+            <div class="fg"><label>권한</label><select class="fc" id="f-admin-perm"><option>일반</option><option>관리자</option></select></div>
+        </div>
+        <div class="fg"><label>상태</label><select class="fc" id="f-admin-status"><option>활성</option><option>휴면</option></select></div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px">
+            <button class="btn btn-sm" onclick="clearAdminForm()">초기화</button>
+            <button class="btn btn-sm btn-p" onclick="saveAdmin()">저장</button>
+            <button class="btn btn-sm" style="background:var(--red-lt); color:var(--red); border-color:var(--red);" onclick="deleteAdmin()">삭제</button>
+        </div>
+    </div>
+  </div>
+
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+const PAGE_TITLES={dashboard:'Overview',rfqlist:'RFQ 목록',rfqdetail:'RFQ 목록',kanban:'진행 보드',rfqnew:'RFQ 등록',analytics:'수주 분석',cumulative:'누적 수주 현황',customers:'고객사 관리', admins:'담당자 관리',quote:'견적 작성'};
+const NAV_MAP={dashboard:'n-dashboard',rfqlist:'n-rfqlist',rfqdetail:'n-rfqlist',kanban:'n-kanban',rfqnew:'n-rfqnew',analytics:'n-analytics',cumulative:'n-cumulative',customers:'n-customers', admins:'n-admins'};
+
+function nav(page,el){
+  if(page==='quote'){openQuoteFromList(document.getElementById('d-rfqid')?.textContent||'');return;}
+  const pageEl=document.getElementById('page-'+page);
+  if(!pageEl){console.warn('nav: page not found ->',page);return;}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  pageEl.classList.add('active');
+  const t=document.getElementById('page-title');
+  if(page==='rfqdetail'){
+    const id=document.getElementById('d-rfqid').textContent;
+    t.innerHTML='<span class="bc" style="cursor:pointer" onclick="navToList()">RFQ 목록</span><span class="bcsep"> › </span>'+id;
+  } else {
+    t.textContent=PAGE_TITLES[page]||page;
+  }
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nid=NAV_MAP[page]; if(nid){const nel=document.getElementById(nid);if(nel)nel.classList.add('active');}
+  if(page==='rfqnew'){goStep(1);initRows(); document.getElementById('quote-info-banner').style.display='none';}
+  if(page==='rfqdetail'){const firstTab=document.querySelector('.tabs .tab');if(firstTab)switchTab(firstTab,'t-info'); onProgressStatus('진행중');}
+}
+
+function openDetail(id){
+  document.getElementById('d-rfqid').textContent=id;
+  nav('rfqdetail',null);
+}
+
+function switchTab(el,pane){
+  const tabContainer = el.closest('.tabs');
+  tabContainer.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  tabContainer.parentElement.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const pEl=document.getElementById(pane); if(pEl) pEl.classList.add('active');
+}
+
+function updateStatus(v){ document.getElementById('d-status-badge').textContent=v; }
+
+function onProgressStatus(v){
+  const chasu = document.getElementById('progress-chasu-wrap');
+  const holding = document.getElementById('holding-reason-wrap');
+  const drop = document.getElementById('drop-reason-wrap');
+  if(chasu) chasu.style.display = v==='진행중'?'block':'none';
+  if(holding) holding.style.display = v==='Holding'?'block':'none';
+  if(drop) drop.style.display = v==='Drop'?'block':'none';
+}
+
+function onNewStatus(v){
+  const details = document.getElementById('new-status-details');
+  const fail = document.getElementById('new-fail-wrap');
+  if(v==='진행중'){
+      if(details) details.style.display='flex';
+      if(fail) fail.style.display='none';
+  } else if (v === '실패' || v === 'Drop'){
+      if(details) details.style.display='none';
+      if(fail) fail.style.display='flex';
+  } else {
+      if(details) details.style.display='none';
+      if(fail) fail.style.display='none';
+  }
+}
+
+let cur=1;
+function goStep(n){
+  cur=n;
+  [1,2,3].forEach(i=>{
+    const s=document.getElementById('rfq-step-'+i),b=document.getElementById('step-'+i);
+    if(s)s.style.display=i===n?'block':'none';
+    if(b){b.className='step';if(i<n)b.classList.add('done');else if(i===n)b.classList.add('cur');}
+  });
+  if(n===2) onNewStatus(document.getElementById('new-status').value);
+}
+
+const LINE_OPTS=['A/C','B/H','I/C','저압외','D/S','B/S','G/R','기타'];
+const TS='border:1px solid #e0e0e0;padding:4px 5px';
+const IS='width:52px;padding:2px 4px;border:1px solid #ddd;border-radius:4px;font-size:11px;background:#fff;color:#1a1a1a;font-family:inherit;text-align:right';
+const SS='width:88px;padding:2px 4px;border:1px solid #ddd;border-radius:4px;font-size:11px;background:#fff;color:#1a1a1a';
+
+function fmtNum(v){ const n=parseFloat(String(v).replace(/,/g,'')); if(isNaN(n)) return v; return n.toLocaleString('ko-KR');}
+function onNumBlur(el){ const n=parseFloat(String(el.value).replace(/,/g,'')); if(!isNaN(n)) el.value=n.toLocaleString('ko-KR'); calcSum(); }
+
+function makeRow(){
+  const opts=LINE_OPTS.map(l=>`<option>${l}</option>`).join('');
+  const numCell=()=>`<td style="${TS}"><input style="${IS}" placeholder="-" oninput="calcSum()" onblur="onNumBlur(this)"></td>`;
+  const cells=Array(18).fill(0).map(numCell).join('');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td style="${TS}"><input style="width:82px;padding:2px 5px;border:1px solid #ddd;border-radius:4px;font-size:11px;background:#fff;color:#1a1a1a;font-family:inherit" placeholder="품번"></td><td style="${TS}"><input style="width:90px;padding:2px 5px;border:1px solid #ddd;border-radius:4px;font-size:11px;background:#fff;color:#1a1a1a;font-family:inherit" placeholder="품명"></td><td style="${TS}"><select style="${SS}">${opts}</select></td>${cells}`;
+  return tr;
+}
+
+function initRows(){const tb=document.getElementById('quote-tbody');if(!tb)return;tb.innerHTML='';tb.appendChild(makeRow());}
+function addRow(){const tb=document.getElementById('quote-tbody');if(tb)tb.appendChild(makeRow());}
+
+function calcSum(){
+  const rows=document.querySelectorAll('#quote-tbody tr');
+  let tS=0,tP=0;
+  rows.forEach(row=>{
+    const inp=row.querySelectorAll('input[type!=radio]');
+    for(let y=0;y<6;y++){
+      const q=+(inp[2+y]?.value||'').replace(/,/g,'')||0; const cv=+(inp[8+y]?.value||'').replace(/,/g,'')||0; const p=+(inp[14+y]?.value||'').replace(/,/g,'')||0;
+      tS+=q*p; tP+=q*(p-cv);
+    }
+  });
+  document.getElementById('c-sales').textContent=tS?(tS/1e8).toFixed(1):'—';
+  document.getElementById('c-profit').textContent=tP?(tP/1e8).toFixed(1):'—';
+  if(tS){
+    const fr=document.querySelector('#quote-tbody tr'); const fi=fr?.querySelectorAll('input[type!=radio]');
+    const p0=+(fi?.[14]?.value||'').replace(/,/g,'')||0; const c0=+(fi?.[8]?.value||'').replace(/,/g,'')||0;
+    document.getElementById('c-r1').textContent=p0>0?((p0-c0)/p0*100).toFixed(1)+'%':'—';
+    document.getElementById('c-r2').textContent=(tP/tS*100).toFixed(1)+'%';
+  } else {document.getElementById('c-r1').textContent='—';document.getElementById('c-r2').textContent='—';}
+}
+
+function filterResult(type){
+  ['all','won','lost'].forEach(t=>{ const b=document.getElementById('f-'+t); b.style.background=t===type?'var(--blue)':'#fff'; b.style.color=t===type?'#fff':'var(--text)'; b.style.borderColor=t===type?'var(--blue)':'var(--border2)'; });
+  document.querySelectorAll('#result-tbody tr').forEach(tr=>{ tr.style.display=type==='all'||tr.dataset.result===type?'':'none'; });
+}
+
+function submitRfq(){ alert('RFQ 등록 완료!\nRFQ 번호: 2026-03-31-2-1 (자동 채번)'); navToList(); }
+function addCompetitor(){
+  const list = document.getElementById('competitor-list'); if(!list) return;
+  const div = document.createElement('div'); div.style.cssText = 'display:flex;gap:6px;align-items:center';
+  div.innerHTML = '<input class="fc" placeholder="경쟁사명 입력" style="flex:1"><button class="btn-ghost" style="color:var(--red);font-size:16px;line-height:1" onclick="removeCompetitor(this)">−</button>';
+  list.appendChild(div);
+}
+function removeCompetitor(btn){ const list = document.getElementById('competitor-list'); if(list && list.children.length > 1) btn.parentElement.remove(); }
+function onSumsimwi(checked){
+  const track=document.getElementById('sumsimwi-track'),thumb=document.getElementById('sumsimwi-thumb');
+  if(track) track.style.background=checked?'var(--blue)':'#ccc'; if(thumb) thumb.style.left=checked?'23px':'3px';
+}
+function addInvRow(tbodyId, placeholder){
+  const tb = document.getElementById(tbodyId); if(!tb) return;
+  const tr = document.createElement('tr');
+  tr.innerHTML = '<td><input class="fc" placeholder="'+placeholder+'" oninput="calcInvTotal()"></td><td><input class="fc" style="width:60px"></td><td><input class="fc" placeholder="0.0" style="width:65px" oninput="calcInvTotal()"></td><td><button class="btn-ghost" style="color:var(--red)" onclick="removeInvRow(this)">✕</button></td>';
+  tb.appendChild(tr);
+}
+function removeInvRow(btn){ btn.closest('tr').remove(); calcInvTotal(); }
+function calcInvTotal(){
+  const sumTbody=(id)=>{ let s=0; document.querySelectorAll('#'+id+' tr').forEach(tr=>{ s+=parseFloat((tr.querySelectorAll('input')[2]?.value||'0').replace(/,/g,''))||0; }); return s; };
+  const eq=sumTbody('equip-tbody'),mo=sumTbody('mold-tbody');
+  const eqEl=document.getElementById('equip-total'),moEl=document.getElementById('mold-total'),grEl=document.getElementById('inv-grand-total');
+  if(eqEl) eqEl.textContent=eq.toFixed(1)+'억'; if(moEl) moEl.textContent=mo.toFixed(1)+'억'; if(grEl) grEl.textContent=(eq+mo).toFixed(1)+'억';
+}
+function calcLTA(){
+  const baseEl=document.getElementById('lta-base'),sopEl=document.getElementById('lta-sop'),tbody=document.getElementById('lta-tbody'),rateEl=document.getElementById('lta-rate'),yearsEl=document.getElementById('lta-years');
+  if(!baseEl||!tbody) return;
+  const basePrice=parseFloat((baseEl.value||'0').replace(/,/g,''))||0,sopYear=sopEl?parseInt((sopEl.value||'2029').split('-')[0]):2029,rate=parseFloat(rateEl?.value||0),years=parseInt(yearsEl?.value||0);
+  const summaryEl=document.getElementById('lta-summary'); if(summaryEl) summaryEl.textContent='연 '+rate.toFixed(1)+'% × '+years+'년';
+  const displayEl=document.getElementById('lta-base-display'); if(displayEl) displayEl.textContent=basePrice.toLocaleString()+' 원';
+  const totalEl=document.getElementById('lta-total-bands'); if(totalEl) totalEl.textContent='단일 조건';
+  let rows='',curPrice=basePrice;
+  for(let y=0;y<=years;y++){
+    const applied=y===0?curPrice:Math.round(curPrice*(1-rate/100)),rateLabel=y===0?'—':'-'+rate.toFixed(1)+'%';
+    rows+='<tr><td>Y'+y+' ('+(sopYear+y)+')</td><td>'+Math.round(curPrice).toLocaleString()+'</td><td style="color:var(--red)">'+rateLabel+'</td><td style="font-weight:600">'+applied.toLocaleString()+'</td><td style="font-size:11px;color:var(--text2)">약정 CR</td></tr>';
+    if(y>0) curPrice=applied;
+  }
+  if(!rows)rows='<tr><td colspan="5" style="color:var(--text3);text-align:center;font-size:12px">조건을 입력하세요</td></tr>';
+  tbody.innerHTML=rows;
+}
+function addLumpsum(){
+  const colors=['var(--blue)','var(--teal)','var(--amber)','var(--green)'],container=document.getElementById('lumpsum-items'); if(!container) return;
+  const n=container.querySelectorAll('.lumpsum-item').length,color=colors[n % colors.length],div=document.createElement('div');
+  div.className='lumpsum-item'; div.style.cssText='padding:14px;border:1px solid var(--border);border-radius:8px;border-left:3px solid '+color;
+  div.innerHTML='<div class="fr3"><div class="fg" style="margin-bottom:0"><label>지급 항목명</label><input class="fc" placeholder="항목명 입력"></div><div class="fg" style="margin-bottom:0"><label>지급 금액 (억원)</label><div style="display:flex;align-items:center;gap:6px"><input class="fc" placeholder="0.0" style="font-size:15px;font-weight:600"><span style="font-size:12px;color:var(--text2);white-space:nowrap">억원</span></div></div><div class="fg" style="margin-bottom:0"><label>지급 시점</label><select class="fc"><option>수주 확정 시</option><option>SOP 시점</option><option>계약 체결 시</option><option>기타</option></select></div></div><div class="fg" style="margin-top:10px;margin-bottom:0"><label>지급 사유 / 협상 배경</label><textarea class="fc" style="min-height:70px" placeholder="협상 배경 및 사유를 기입하세요..."></textarea></div><div style="margin-top:8px;display:flex;justify-content:flex-end"><button class="btn-ghost" style="color:var(--red);font-size:11px" onclick="removeLumpsum(this)">항목 삭제</button></div>';
+  container.appendChild(div);
+}
+function removeLumpsum(btn){ btn.closest('.lumpsum-item').remove(); }
+function navToList(){ nav('rfqlist',null); }
+function onCurrencyChange(val){
+  const wrap=document.getElementById('exchange-rate-wrap'),note=document.getElementById('currency-note'),cu=document.getElementById('hd-cost-unit'),pu=document.getElementById('hd-price-unit');
+  if(wrap) wrap.style.display=val==='KRW'?'none':'flex'; const unit=val==='KRW'?'(원)':'('+val+')';
+  if(cu) cu.textContent=unit; if(pu) pu.textContent=unit;
+  if(note) note.textContent='수량: 대/년 | 원가·판가: '+val+(val==='KRW'?' (천단위 콤마)':' — 환율 입력 후 원화 환산 가능');
+}
+function openQuoteFromList(rfqId){
+  const data={'2026-03-31-1-1':{company:'HMG 울산', model:'NQ7', line:'저압', chasu:'1차'},'2026-03-28-2-1':{company:'HMG 화성', model:'CV2', line:'고압', chasu:'2차'},'2026-03-25-1-2':{company:'BMW', model:'G26', line:'A/C', chasu:'1차'},'2026-03-20-1-1':{company:'HMG 울산', model:'OS', line:'저압', chasu:'1차'},'2026-03-15-3-1':{company:'GM', model:'9BXX', line:'W/S', chasu:'3차'},};
+  const info=data[rfqId]||{company:'(신규)',model:'',line:'',chasu:'1차'};
+  const currentChasuNum=parseInt(info.chasu.replace('차',''))||0,nextChasu=(currentChasuNum+1)+'차';
+  document.getElementById('page-title').innerHTML='<span class="bc" onclick="navToList()">RFQ 목록</span><span class="bcsep">›</span>'+rfqId+'<span style="font-weight:400"> | ' + nextChasu + ' 견적 작성</span>';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-rfqnew').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('n-rfqnew').classList.add('active');
+  goStep(2);
+  const banner=document.getElementById('quote-info-banner');
+  if(banner){banner.innerHTML='<strong>'+rfqId+'</strong> &nbsp;'+info.company+' / '+info.model+' '+info.line+' &nbsp;<span class="badge b-gray">'+info.chasu+'</span> → <span class="badge b-blue">'+nextChasu+'</span> &nbsp;<span style="font-size:11px;color:var(--text3)">기존 정보가 로드되었습니다.</span>'; banner.style.display='flex';}
+}
+
+/* ── 담당자 관리 ── */
+function toggleAdminForm(show){
+    const form = document.getElementById('admin-form-card');
+    if(form) form.style.display = show ? 'block' : 'none';
+    if(show) clearAdminForm();
+}
+
+function clearAdminForm(){
+    document.getElementById('f-admin-id').value = '';
+    document.getElementById('f-admin-id').readOnly = false;
+    document.getElementById('f-admin-name').value = '';
+    document.getElementById('f-admin-email').value = '';
+    document.getElementById('f-admin-team').value = '';
+    document.getElementById('f-admin-pos').value = '';
+    document.getElementById('f-admin-perm').value = '일반';
+    document.getElementById('f-admin-status').value = '활성';
+    document.getElementById('admin-form-title').textContent = '새 담당자 추가';
+    document.querySelectorAll('#admin-table tr').forEach(r => r.classList.remove('selected'));
+}
+
+function selectAdminRow(row){
+    document.querySelectorAll('#admin-table tr').forEach(r => r.classList.remove('selected'));
+    row.classList.add('selected');
+    const cells = row.getElementsByTagName('td');
+    
+    document.getElementById('f-admin-id').value = cells[0].textContent;
+    document.getElementById('f-admin-id').readOnly = true;
+    document.getElementById('f-admin-name').value = cells[1].textContent;
+    document.getElementById('f-admin-team').value = cells[2].textContent;
+    document.getElementById('f-admin-pos').value = cells[3].textContent;
+    document.getElementById('f-admin-perm').value = cells[4].textContent;
+    document.getElementById('f-admin-email').value = cells[5].textContent;
+    document.getElementById('f-admin-status').value = cells[6].textContent.trim();
+
+    document.getElementById('admin-form-title').textContent = '담당자 정보 수정';
+    const form = document.getElementById('admin-form-card');
+    if(form) form.style.display = 'block';
+}
+
+function saveAdmin() {
+    const id = document.getElementById('f-admin-id').value.trim();
+    if (!id) { alert('ID를 입력해주세요.'); return; }
+    
+    const tbody = document.getElementById('admin-table').querySelector('tbody');
+    let row = tbody.querySelector(`tr[data-id="${id}"]`);
+
+    if (row) { // Update existing
+        const cells = row.cells;
+        cells[1].textContent = document.getElementById('f-admin-name').value;
+        cells[2].textContent = document.getElementById('f-admin-team').value;
+        cells[3].textContent = document.getElementById('f-admin-pos').value;
+        cells[4].textContent = document.getElementById('f-admin-perm').value;
+        cells[5].textContent = document.getElementById('f-admin-email').value;
+        const status = document.getElementById('f-admin-status').value;
+        cells[6].innerHTML = `<span class="badge ${status === '활성' ? 'b-green' : 'b-red'}">${status}</span>`;
+        alert(`ID ${id} 담당자 정보가 수정되었습니다.`);
+    } else { // Add new
+        row = tbody.insertRow();
+        row.setAttribute('data-id', id);
+        row.onclick = () => selectAdminRow(row);
+        const status = document.getElementById('f-admin-status').value;
+        row.innerHTML = `<td>${id}</td>
+                         <td>${document.getElementById('f-admin-name').value}</td>
+                         <td>${document.getElementById('f-admin-team').value}</td>
+                         <td>${document.getElementById('f-admin-pos').value}</td>
+                         <td>${document.getElementById('f-admin-perm').value}</td>
+                         <td>${document.getElementById('f-admin-email').value}</td>
+                         <td><span class="badge ${status === '활성' ? 'b-green' : 'b-red'}">${status}</span></td>`;
+        alert(`ID ${id} 담당자가 추가되었습니다.`);
+    }
+    clearAdminForm();
+    toggleAdminForm(false);
+}
+
+function deleteAdmin() {
+    const id = document.getElementById('f-admin-id').value;
+    if (!id) { alert('삭제할 담당자를 선택해주세요.'); return; }
+    
+    if (confirm(`ID ${id} 담당자 정보를 정말 삭제하시겠습니까?`)) {
+        const row = document.querySelector(`#admin-table tr[data-id="${id}"]`);
+        if (row) {
+            row.remove();
+            alert(`ID ${id} 담당자 정보가 삭제되었습니다.`);
+            clearAdminForm();
+            toggleAdminForm(false);
+        } else {
+            alert('삭제할 행을 찾을 수 없습니다.');
+        }
+    }
+}
+
+
+// 최초 로드 시 초기화
+document.addEventListener('DOMContentLoaded', ()=>{
+    onProgressStatus('진행중');
+    onNewStatus('진행중');
+    initRows();
+    calcLTA();
+    calcInvTotal();
+});
+</script>
+</body>
+</html>
